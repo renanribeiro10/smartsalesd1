@@ -284,6 +284,14 @@ function render(){
     ${st.entries.length?`<button class="btn-gh" onclick="go('review')">Ver ${st.entries.length} ${st.entries.length===1?'registro':'registros'} →</button>`:''}`;
   }
 
+  else if(st.phase==='choice'){
+    wrap.innerHTML=`${logo('Registro do dia')}
+    <h2 class="q-h">Hoje teve<br><span class="oa">demanda</span><br>de produto?</h2>
+    <p class="q-sub" style="margin-bottom:28px;">Algum cliente pediu produto, tirou dúvida ou sugeriu algo que não temos no portfólio?</p>
+    <button class="btn" onclick="startForm()">Sim, vou registrar →</button>
+    <div style="height:12px"></div>
+    <button class="btn" style="background:transparent;color:var(--mt2);border:1.5px solid var(--bd);margin-top:4px;" onclick="semDemandaHoje()">Não tive demandas hoje</button>
+    `;}
   else if(st.phase==='form'){
     const s=st.formStep,c=st.cur;let content='';
     if(s===0){content=`<h2 class="q-h">Que tipo de<br><span class="oa">demanda</span> foi?</h2><p class="q-sub">Selecione a categoria que melhor descreve o que o cliente trouxe.</p>${DT.map(t=>`<div class="type-c ${c.type===t.id?'sel':''}" onclick="selType('${t.id}')"><div class="type-ic">${t.ico}</div><div><div class="t-lb">${t.lbl}</div><div class="t-sb">${t.sub}</div></div></div>`).join('')}`;}
@@ -312,7 +320,13 @@ function render(){
 
   else if(st.phase==='submitting'){wrap.innerHTML=`${logo()}<div style="text-align:center;padding:60px 0"><div style="font-size:38px;margin-bottom:22px">⏳</div><h2 style="font-size:22px;font-weight:800;margin-bottom:8px">Enviando...</h2><p style="color:var(--mt);font-size:14px">Salvando na planilha e notificando a liderança.</p></div>`;}
 
-  else if(st.phase==='done'){wrap.innerHTML=`<div style="text-align:center"><div style="height:36px"></div><div class="ok-ico">✓</div><h1 class="big-h" style="text-align:center"><span class="oa">Enviado!</span></h1><p class="sub" style="text-align:center">Valeu, ${fn}! Seus registros estão na planilha e a liderança foi notificada.</p><div class="stat-box"><div class="stat-n">${st.entries.length}</div><div class="stat-l">${st.entries.length===1?'demanda registrada hoje':'demandas registradas hoje'}</div></div><p style="font-size:13px;color:var(--mt)">A análise chega amanhã cedo no e-mail da liderança.</p></div>`;}
+  else if(st.phase==='done'){
+    const isDia=st.entries.length===1&&st.entries[0].type==='sem_demanda';
+    wrap.innerHTML=`<div style="text-align:center"><div style="height:36px"></div><div class="ok-ico">✓</div>
+    <h1 class="big-h" style="text-align:center"><span class="oa">${isDia?'Registrado!':'Enviado!'}</span></h1>
+    <p class="sub" style="text-align:center">Valeu, ${fn}! ${isDia?'Dia registrado — até amanhã.':'Seus registros estão na planilha e a liderança foi notificada.'}</p>
+    ${isDia?'<div class="stat-box"><div class="stat-n" style="font-size:32px">📋</div><div class="stat-l">Dia registrado sem demandas</div></div>':'<div class="stat-box"><div class="stat-n">'+st.entries.length+'</div><div class="stat-l">'+(st.entries.length===1?'demanda registrada hoje':'demandas registradas hoje')+'</div></div>'}
+    <p style="font-size:13px;color:var(--mt)">${isDia?'Continue amanhã — consistência é o que gera inteligência.':'A análise chega amanhã cedo no e-mail da liderança.'}</p></div>`;}
 
   else if(st.phase==='error'){wrap.innerHTML=`${logo()}<div style="text-align:center;padding:40px 0"><div style="font-size:38px;margin-bottom:20px">⚠️</div><h2 style="font-size:22px;font-weight:800;margin-bottom:8px">Erro no envio</h2><p style="color:var(--mt);font-size:14px;margin-bottom:26px">Verifique sua conexão e tente novamente.</p><button class="btn" onclick="go('review')">← Tentar de novo</button></div>`;}
 }
@@ -320,6 +334,7 @@ function render(){
 // ── Actions ──
 function confirmName(){if(st.nameInput.trim())go('welcome');}
 function startForm(){st.cur={type:null,product:'',description:'',frequency:1,imgData:null};st.formStep=0;go('form');}
+function semDemandaHoje(){st.entries=[{type:'sem_demanda',product:'Sem demandas hoje',description:'Dia registrado sem demandas de produto.',frequency:0}];go('submitting');submitData();}
 function addMore(){st.cur={type:null,product:'',description:'',frequency:1,imgData:null};st.formStep=0;go('form');}
 function selType(id){st.cur.type=id;document.querySelectorAll('.type-c').forEach(c=>{const a=c.getAttribute('onclick');c.classList.toggle('sel',a&&a.includes("'"+id+"'"));});const nb=document.getElementById('nextBtn');if(nb)nb.disabled=false;}
 function chFreq(d){st.cur.frequency=Math.max(1,st.cur.frequency+d);render();}
