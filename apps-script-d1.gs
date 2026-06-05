@@ -291,22 +291,39 @@ function getRanking() {
 function emailHtmlDiario(nome, link, ranking) {
   var rankingHtml = '';
   if (ranking.length > 0) {
-    var posicoes = ['1.', '2.', '3.', '4.'];
+    var medalhas = ['&#x1F947;','&#x1F948;','&#x1F949;'];
     var linhas = '';
-    ranking.slice(0,4).forEach(function(r, i) {
-      var cor = r.nome === nome ? 'font-weight:bold;color:#FF5C00;' : 'color:#333;';
-      linhas += '<tr style="border-bottom:1px solid #eee;">' +
-        '<td style="padding:8px 12px;font-size:12px;color:#aaa;">' + posicoes[i] + '</td>' +
-        '<td style="padding:8px 12px;font-size:13px;' + cor + '">' + r.nome + '</td>' +
-        '<td style="padding:8px 12px;font-size:13px;font-weight:bold;color:#FF5C00;">' + r.pontos + ' pts</td>' +
-        '<td style="padding:8px 12px;font-size:12px;color:#aaa;">' + r.streak + ' dias</td>' +
-        '</tr>';
+    ranking.slice(0, 5).forEach(function(r, i) {
+      var isVoce = r.nome === nome;
+      var bgRow = isVoce ? 'background:#fff8f5;' : '';
+      var nomeCor = isVoce ? 'color:#FF5C00;font-weight:bold;' : 'color:#333;';
+      var medal = i < 3 ? medalhas[i] : (i + 1) + '.';
+      var streakBadge = r.streak > 1
+        ? '<span style=\"font-size:11px;background:#fff3f0;color:#FF5C00;border-radius:4px;padding:1px 6px;margin-left:6px;\">&#x1F525; ' + r.streak + ' dias</span>'
+        : '';
+      var voceLabel = isVoce ? ' <span style=\"font-size:11px;color:#FF5C00;\">(voc&ecirc;)</span>' : '';
+      linhas +=
+        '<tr style=\"' + bgRow + 'border-bottom:1px solid #eee;\">' +
+        '<td style=\"padding:10px 12px;font-size:15px;text-align:center;width:36px;\">' + medal + '</td>' +
+        '<td style=\"padding:10px 8px;font-size:13px;' + nomeCor + '\">' + r.nome + streakBadge + voceLabel + '</td>' +
+        '<td style=\"padding:10px 12px;font-size:14px;font-weight:bold;color:#FF5C00;text-align:right;\">' +
+        (r.pontos > 0 ? r.pontos + ' pts' : '<span style=\"color:#ccc;font-size:12px;\">—</span>') +
+        '</td></tr>';
     });
     rankingHtml =
-      '<div style="height:20px;"></div>' +
-      '<div style="font-size:10px;color:#FF5C00;font-weight:bold;text-transform:uppercase;letter-spacing:0.5px;border-bottom:1px solid #eee;padding-bottom:8px;">Ranking da semana</div>' +
-      '<table width="100%" cellpadding="0" cellspacing="0" style="border-collapse:collapse;">' + linhas + '</table>';
+      '<div style=\"height:24px;\"></div>' +
+      '<div style=\"background:#1a1a1a;border-radius:10px 10px 0 0;padding:16px 20px;\">' +
+      '<div style=\"font-size:10px;color:rgba(255,255,255,0.4);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px;\">D1FITNESS</div>' +
+      '<div style=\"font-size:15px;font-weight:bold;color:#ffffff;margin-bottom:2px;\">Ranking de Intelig&ecirc;ncia de Produto</div>' +
+      '<div style=\"font-size:12px;color:#FF5C00;\">Quem mais registra, mais influencia o portf&oacute;lio.</div>' +
+      '</div>' +
+      '<table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" style=\"border-collapse:collapse;border:1px solid #eee;border-top:none;\">\' + linhas + \'</table>' +
+      '<div style=\"font-size:12px;color:#aaa;text-align:center;margin-top:10px;line-height:1.6;\">' +
+      'Cada registro vale pontos &mdash; consist&ecirc;ncia gera <strong style=\"color:#FF5C00;\">streak</strong> e b&ocirc;nus. &#x1F525;' +
+      '</div>';
   }
+
+  return
 
   return '<!DOCTYPE html><html><head><meta charset="UTF-8"></head><body style="margin:0;padding:0;background:#ffffff;font-family:Arial,sans-serif;">' +
   '<table width="100%" cellpadding="0" cellspacing="0"><tr><td align="center" style="padding:32px 16px;">' +
