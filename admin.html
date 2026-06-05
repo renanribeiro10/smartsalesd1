@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>D1FITNESS · Painel de Inteligência</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --or:#FF5C00;--or-d:#e04d00;--or-glow:rgba(255,92,0,0.10);
+  --bg:#0d0d0d;--bg2:#161616;--bg3:#1e1e1e;
+  --tx:#f0f0f0;--tx2:#a0a0a0;--tx3:#606060;
+  --bd:rgba(255,255,255,0.08);--bd2:rgba(255,255,255,0.14);
+  --rd:10px;
+}
+body{font-family:'Figtree',sans-serif;background:var(--bg);color:var(--tx);min-height:100vh;}
+
+/* NAV */
+.nav{display:flex;align-items:center;justify-content:space-between;padding:16px 24px;border-bottom:1px solid var(--bd);background:var(--bg2);}
+.logo{display:flex;align-items:center;gap:10px;}
+.logo-box{width:34px;height:34px;background:var(--or);border-radius:8px;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;color:#fff;flex-shrink:0;}
+.logo-text{font-size:15px;font-weight:600;color:var(--tx);}
+.logo-sub{font-size:11px;color:var(--tx2);}
+.nav-badge{font-size:11px;font-weight:500;background:var(--or-glow);color:var(--or);border:1px solid rgba(255,92,0,0.25);border-radius:20px;padding:3px 10px;}
+
+/* MAIN */
+.main{max-width:960px;margin:0 auto;padding:28px 20px;}
+
+/* CONNECT CARD */
+.connect-card{background:var(--bg2);border:1px solid var(--bd);border-radius:var(--rd);padding:20px;margin-bottom:20px;}
+.connect-label{font-size:12px;font-weight:600;color:var(--tx2);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:8px;}
+.connect-row{display:flex;gap:10px;}
+.url-input{flex:1;background:var(--bg3);border:1px solid var(--bd2);border-radius:8px;padding:10px 14px;font-size:13px;font-family:'JetBrains Mono',monospace;color:var(--tx);outline:none;}
+.url-input:focus{border-color:var(--or);}
+.url-input::placeholder{color:var(--tx3);}
+.btn-primary{background:var(--or);color:#fff;border:none;border-radius:8px;padding:10px 20px;font-size:13px;font-weight:600;cursor:pointer;font-family:'Figtree',sans-serif;white-space:nowrap;transition:background .2s;}
+.btn-primary:hover{background:var(--or-d);}
+.btn-primary:disabled{opacity:0.4;cursor:not-allowed;}
+.btn-sec{background:var(--bg3);color:var(--tx);border:1px solid var(--bd2);border-radius:8px;padding:10px 18px;font-size:13px;font-weight:500;cursor:pointer;font-family:'Figtree',sans-serif;transition:background .2s;}
+.btn-sec:hover{background:var(--bg2);}
+.connect-hint{font-size:11px;color:var(--tx3);margin-top:7px;}
+.error-box{background:rgba(220,38,38,0.10);border:1px solid rgba(220,38,38,0.25);border-radius:8px;padding:12px 16px;font-size:13px;color:#f87171;margin-top:10px;}
+
+/* METRICS */
+.metrics{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px;margin-bottom:20px;}
+.metric-card{background:var(--bg2);border:1px solid var(--bd);border-radius:var(--rd);padding:16px;}
+.metric-val{font-size:30px;font-weight:600;color:var(--tx);line-height:1;}
+.metric-val span{color:var(--or);}
+.metric-lbl{font-size:11px;color:var(--tx2);text-transform:uppercase;letter-spacing:0.05em;margin-top:6px;}
+
+/* TABS */
+.tabs{display:flex;border-bottom:1px solid var(--bd);margin-bottom:16px;gap:0;overflow-x:auto;}
+.tab-btn{padding:10px 16px;font-size:13px;font-weight:500;color:var(--tx2);cursor:pointer;background:none;border:none;border-bottom:2px solid transparent;font-family:'Figtree',sans-serif;white-space:nowrap;transition:color .15s;}
+.tab-btn.active{color:var(--or);border-bottom:2px solid var(--or);}
+.tab-btn:hover:not(.active){color:var(--tx);}
+
+/* CARDS */
+.panel{background:var(--bg2);border:1px solid var(--bd);border-radius:var(--rd);padding:20px;}
+.panel-title{font-size:12px;font-weight:600;color:var(--tx2);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:14px;}
+
+/* PRODUCTS */
+.prod-list{display:flex;flex-direction:column;gap:0;}
+.prod-row{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid var(--bd);}
+.prod-row:last-child{border-bottom:none;}
+.rank-badge{width:26px;height:26px;border-radius:50%;font-size:11px;font-weight:600;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.r1{background:rgba(255,215,0,0.15);color:#f5c518;}
+.r2{background:rgba(180,180,180,0.15);color:#aaa;}
+.r3{background:rgba(180,100,30,0.15);color:#cd7f32;}
+.rn{background:var(--bg3);color:var(--tx3);}
+.prod-name{flex:1;font-size:13px;color:var(--tx);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.prod-bar-wrap{width:120px;flex-shrink:0;}
+.prod-bar-bg{height:5px;border-radius:3px;background:var(--bg3);}
+.prod-bar-fill{height:5px;border-radius:3px;background:var(--or);}
+.prod-count{font-size:13px;font-weight:600;color:var(--or);min-width:32px;text-align:right;}
+
+/* VENDORS */
+.vend-row{display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--bd);}
+.vend-row:last-child{border-bottom:none;}
+.vend-left{display:flex;align-items:center;gap:10px;}
+.avatar{width:34px;height:34px;border-radius:50%;background:var(--or-glow);color:var(--or);font-size:13px;font-weight:600;display:flex;align-items:center;justify-content:center;border:1px solid rgba(255,92,0,0.2);flex-shrink:0;}
+.vend-name{font-size:13px;color:var(--tx);}
+.vend-stats{display:flex;gap:20px;}
+.stat-box{text-align:right;}
+.stat-val{font-size:14px;font-weight:600;color:var(--tx);}
+.stat-val.or{color:var(--or);}
+.stat-lbl{font-size:10px;color:var(--tx3);text-transform:uppercase;}
+
+/* INSIGHTS */
+.insight-wrap{position:relative;}
+.insight-box{background:var(--bg3);border:1px solid var(--bd);border-radius:8px;padding:16px;font-size:13px;line-height:1.75;color:var(--tx2);white-space:pre-wrap;min-height:120px;}
+.insight-placeholder{color:var(--tx3);font-style:italic;}
+
+/* WEEKLY */
+.weekly-info{font-size:13px;color:var(--tx2);margin-bottom:14px;line-height:1.6;}
+
+/* EMPTY */
+.empty{display:flex;flex-direction:column;align-items:center;gap:12px;padding:60px 20px;text-align:center;color:var(--tx3);}
+.empty svg{opacity:0.3;}
+.empty-title{font-size:15px;font-weight:500;color:var(--tx2);}
+.empty-sub{font-size:13px;}
+
+/* SPINNER */
+.spinner{display:inline-block;width:14px;height:14px;border:2px solid rgba(255,92,0,0.3);border-top-color:var(--or);border-radius:50%;animation:spin .7s linear infinite;vertical-align:middle;}
+@keyframes spin{to{transform:rotate(360deg);}}
+
+/* UTIL */
+.hidden{display:none!important;}
+.success-msg{color:#4ade80;font-size:12px;margin-top:8px;}
+.err-msg{color:#f87171;font-size:12px;margin-top:8px;}
+
+@media(max-width:600px){
+  .main{padding:16px 12px;}
+  .connect-row{flex-direction:column;}
+  .prod-bar-wrap{display:none;}
+  .vend-stats{gap:12px;}
+}
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="logo">
+    <div class="logo-box">D1</div>
+    <div>
+      <div class="logo-text">D1FITNESS</div>
+      <div class="logo-sub">Inteligência de Produto</div>
+    </div>
+  </div>
+  <div style="display:flex;align-items:center;gap:10px;"><div class="nav-badge">Painel Admin</div><button onclick="document.getElementById('connectCard').style.display=document.getElementById('connectCard').style.display==='none'?'':'none'" style="background:none;border:none;cursor:pointer;color:var(--tx2);font-size:18px;" title="Configurações">⚙️</button></div>
+</nav>
+
+<main class="main">
+
+  <!-- CONNECT -->
+  <div class="connect-card" id="connectCard" style="display:none;">
+    <div class="connect-label">URL do Apps Script</div>
+    <div class="connect-row">
+      <input class="url-input" id="appsUrl" placeholder="https://script.google.com/macros/s/.../exec" />
+      <button class="btn-primary" id="fetchBtn" onclick="fetchData()">Conectar</button>
+    </div>
+    <div class="connect-hint">Cole a URL do Apps Script após reimplantar. Acesso: "Qualquer usuário".</div>
+    <div id="errBox" class="error-box hidden"></div>
+  </div>
+
+  <!-- EMPTY STATE -->
+  <div id="emptyState">
+    <div class="empty">
+      <svg width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 9h6M9 12h6M9 15h4"/></svg>
+      <div class="empty-title">Conecte ao Apps Script para ver os dados</div>
+      <div class="empty-sub">Cole a URL acima e clique em Conectar</div>
+    </div>
+  </div>
+
+  <!-- DASHBOARD (hidden until data loaded) -->
+  <div id="dashboard" class="hidden">
+
+    <!-- METRICS -->
+    <div class="metrics" id="metricsRow"></div>
+
+    <!-- TABS -->
+    <div class="tabs">
+      <button class="tab-btn active" onclick="setTab('produtos',this)">Produtos</button>
+      <button class="tab-btn" onclick="setTab('vendedores',this)">Vendedores</button>
+      <button class="tab-btn" onclick="setTab('insights',this)">IA D1</button>
+      <button class="tab-btn" onclick="setTab('semana',this)">Resumo semanal</button>
+    </div>
+
+    <!-- PRODUTOS -->
+    <div id="tab-produtos">
+      <div class="panel">
+        <div class="panel-title">Produtos mais citados pelos clientes</div>
+        <div class="prod-list" id="prodList"></div>
+      </div>
+    </div>
+
+    <!-- VENDEDORES -->
+    <div id="tab-vendedores" class="hidden">
+      <div class="panel">
+        <div class="panel-title">Participação da equipe</div>
+        <div id="vendList"></div>
+      </div>
+    </div>
+
+    <!-- INSIGHTS IA -->
+    <div id="tab-insights" class="hidden">
+      <div class="panel">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;">
+          <div class="panel-title" style="margin-bottom:0;">Análise com Claude AI</div>
+          <button class="btn-primary" id="insightBtn" onclick="generateInsights()">Analisar com IA</button>
+        </div>
+        <div class="insight-box" id="insightBox">
+          <span class="insight-placeholder">Clique em "Analisar com IA" para Claude identificar os principais produtos demandados, oportunidades e recomendações para o time de compras.</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- RESUMO SEMANAL -->
+    <div id="tab-semana" class="hidden">
+      <div class="panel">
+        <div class="panel-title">Email de resumo semanal</div>
+        <div class="weekly-info">
+          Dispara um email para <strong style="color:var(--or);">renan@d1fitness.com.br</strong> com os top produtos citados na semana, total de formulários preenchidos e vendedores que participaram.
+        </div>
+        <button class="btn-primary" id="weeklyBtn" onclick="sendWeekly()">Enviar resumo agora</button>
+        <div id="weeklyMsg"></div>
+      </div>
+    </div>
+
+  </div><!-- /dashboard -->
+</main>
+
+<script>
+const STORAGE_KEY = 'd1_apps_url';
+let globalData = null;
+let appsScriptUrl = '';
+
+// Auto-connect on load
+(function(){
+  const saved = localStorage.getItem(STORAGE_KEY);
+  if (saved) {
+    document.getElementById('appsUrl').value = saved;
+    setTimeout(() => fetchData(), 300);
+  } else {
+    document.getElementById('connectCard').style.display = '';
+  }
+})();
+
+function setTab(t, el) {
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  el.classList.add('active');
+  ['produtos','vendedores','insights','semana'].forEach(id => {
+    document.getElementById('tab-' + id).classList.toggle('hidden', id !== t);
+  });
+}
+
+async function fetchData() {
+  const url = document.getElementById('appsUrl').value.trim();
+  if (!url) return;
+  appsScriptUrl = url;
+  localStorage.setItem(STORAGE_KEY, url);
+  if (window._autoRefresh) clearInterval(window._autoRefresh);
+  window._autoRefresh = setInterval(function(){ if (globalData) fetchData(); }, 60 * 60 * 1000);
+
+  const btn = document.getElementById('fetchBtn');
+  const err = document.getElementById('errBox');
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner"></span> Conectando...';
+  err.classList.add('hidden');
+
+  try {
+    const sep = url.includes('?') ? '&' : '?';
+    const res = await fetch(url + sep + 'nocache=' + Date.now());
+    if (!res.ok) throw new Error('HTTP ' + res.status + ' — verifique se o script está implantado');
+    const json = await res.json();
+    if (json.erro) throw new Error(json.erro);
+    globalData = json;
+    render(json);
+  } catch(e) {
+    document.getElementById('connectCard').style.display = '';
+    err.textContent = 'Erro: ' + e.message;
+    err.classList.remove('hidden');
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML = 'Conectar';
+  }
+}
+
+function render(json) {
+  const dados = json.dados || [];
+  const now = new Date();
+  const weekAgo = new Date(now - 7*24*60*60*1000);
+  const semana = dados.filter(r => { const ts = r['Timestamp'] ? new Date(r['Timestamp']) : null; return ts && ts >= weekAgo; });
+
+  // Products
+  const prods = {};
+  const prodsDesc = {};
+  dados.forEach(r => parseProdutos(r).forEach(([p,q,d]) => { prods[p]=(prods[p]||0)+q; if(d && !prodsDesc[p]) prodsDesc[p]=d; }));
+  const topProds = Object.entries(prods).sort((a,b)=>b[1]-a[1]).map(([p,q])=>[p,q,prodsDesc[p]||'']);
+  const maxQ = topProds.length ? topProds[0][1] : 1;
+
+  // Vendors
+  const vends = {};
+  dados.forEach(r => {
+    const v = r['Vendedor'] || '';
+    if (!v) return;
+    if (!vends[v]) vends[v] = {total:0, semana:0};
+    vends[v].total++;
+    const ts = r['Timestamp'] ? new Date(r['Timestamp']) : null;
+    if (ts && ts >= weekAgo) vends[v].semana++;
+  });
+
+  // Metrics
+  const mr = document.getElementById('metricsRow');
+  mr.innerHTML = [
+    ['Total de formulários', dados.length, true],
+    ['Esta semana', semana.length, false],
+    ['Produtos únicos', topProds.length, false],
+    ['Vendedores', Object.keys(vends).length, false]
+  ].map(([l,v,hi]) =>
+    '<div class="metric-card"><div class="metric-val">' + (hi ? '<span>' + v + '</span>' : v) + '</div><div class="metric-lbl">' + l + '</div></div>'
+  ).join('');
+
+  // Products list
+  const pl = document.getElementById('prodList');
+  if (!topProds.length) {
+    pl.innerHTML = '<div class="empty" style="padding:40px 0;"><div class="empty-title">Nenhum produto ainda</div></div>';
+  } else {
+    pl.innerHTML = topProds.slice(0,30).map(([p,q,d],i) => {
+      const pct = Math.round(q/maxQ*100);
+      const rc = i===0?'r1':i===1?'r2':i===2?'r3':'rn';
+      return '<div class="prod-row" style="flex-direction:column;align-items:flex-start;gap:4px;padding:12px 0;">' +
+        '<div style="display:flex;align-items:center;gap:10px;width:100%;">' +
+        '<div class="rank-badge ' + rc + '">' + (i+1) + '</div>' +
+        '<div style="flex:1;font-size:13px;color:var(--tx);font-weight:500;">' + p + '</div>' +
+        '<div class="prod-count">' + q + 'x</div>' +
+        '</div>' +
+        (d ? '<div style="font-size:12px;color:var(--tx2);padding-left:36px;line-height:1.5;font-style:italic;">"' + d + '"</div>' : '') +
+        '<div style="padding-left:36px;width:calc(100% - 36px);"><div class="prod-bar-bg"><div class="prod-bar-fill" style="width:' + pct + '%;"></div></div></div>' +
+        '</div>';
+    }).join('');
+  }
+
+  // Vendors list
+  const vl = document.getElementById('vendList');
+  const vendArr = Object.entries(vends).sort((a,b)=>b[1].total-a[1].total);
+  if (!vendArr.length) {
+    vl.innerHTML = '<div style="color:var(--tx3);font-size:13px;text-align:center;padding:32px;">Nenhum vendedor ainda</div>';
+  } else {
+    vl.innerHTML = vendArr.map(([v,s]) =>
+      '<div class="vend-row">' +
+      '<div class="vend-left"><div class="avatar">' + v.charAt(0).toUpperCase() + '</div><div class="vend-name">' + v + '</div></div>' +
+      '<div class="vend-stats">' +
+      '<div class="stat-box"><div class="stat-val">' + s.total + '</div><div class="stat-lbl">Total</div></div>' +
+      '<div class="stat-box"><div class="stat-val or">' + s.semana + '</div><div class="stat-lbl">Semana</div></div>' +
+      '</div></div>'
+    ).join('');
+  }
+
+  document.getElementById('emptyState').classList.add('hidden');
+  document.getElementById('dashboard').classList.remove('hidden');
+}
+
+function parseProdutos(row) {
+  const det = String(row['Registros Detalhados'] || '');
+  const result = [];
+  if (!det.trim()) return result;
+  // Format: "[N] Tipo — Produto\n   Clientes: N\n   \"desc\""
+  const blocos = det.split(/\[\d+\]/).filter(b => b.trim());
+  blocos.forEach(bloco => {
+    const linhas = bloco.split('\n').map(l => l.trim()).filter(Boolean);
+    if (!linhas.length) return;
+    const nome = linhas[0].trim();
+    const mQ = bloco.match(/Clientes[:\s]+(\d+)/i);
+    const mD = bloco.match(/\"([^\"]+)\"/);
+    const qtd = mQ ? parseInt(mQ[1]) : 1;
+    const desc = mD ? mD[1] : '';
+    result.push([nome, qtd, desc]);
+  });
+  if (!result.length && det.trim()) result.push([det.trim().slice(0,80), 1, '']);
+  return result;
+}
+
+function copyForAI() {
+  if (!globalData?.dados) return;
+  const prods = {};
+  globalData.dados.forEach(r => parseProdutos(r).forEach(([p,q,d]) => { prods[p]=(prods[p]||0)+q; }));
+  const top = Object.entries(prods).sort((a,b)=>b[1]-a[1]).slice(0,15);
+  const vends = [...new Set(globalData.dados.map(r=>r['Vendedor']).filter(Boolean))];
+  const txt = 'DADOS D1FITNESS · INTELIGÊNCIA DE PRODUTO\n\n' +
+    'Total de formulários: ' + globalData.total + '\n' +
+    'Vendedores: ' + vends.join(', ') + '\n\n' +
+    'Produtos citados pelos clientes:\n' +
+    top.map(([p,q])=>'• ' + p + ': ' + q + 'x').join('\n') + '\n\n' +
+    'Registros detalhados:\n' +
+    globalData.dados.map(r => r['Vendedor'] + ' (' + r['Data'] + '): ' + String(r['Registros Detalhados']||'').slice(0,200)).join('\n');
+  navigator.clipboard.writeText(txt).then(() => {
+    document.getElementById('insightBox').innerHTML = '<div style="color:#4ade80;font-weight:500;">✓ Dados copiados! Cole no Claude.ai e peça a análise.</div>';
+  }).catch(() => {
+    document.getElementById('insightBox').innerHTML = '<pre style="font-size:11px;color:var(--tx2);white-space:pre-wrap;">' + txt + '</pre>';
+  });
+}
+
+async function generateInsights() {
+  if (!globalData?.dados) return;
+  const btn = document.getElementById('insightBtn');
+  const box = document.getElementById('insightBox');
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner"></span> Analisando...';
+  box.innerHTML = '<span class="insight-placeholder"><span class="spinner"></span> Claude está analisando os dados...</span>';
+
+  const prods = {};
+  globalData.dados.forEach(r => parseProdutos(r).forEach(([p,q]) => { prods[p]=(prods[p]||0)+q; }));
+  const top = Object.entries(prods).sort((a,b)=>b[1]-a[1]).slice(0,15);
+  const vends = [...new Set(globalData.dados.map(r=>r['Vendedor']).filter(Boolean))];
+
+  try {
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({
+        model:'claude-sonnet-4-20250514', max_tokens:1000,
+        messages:[{role:'user',content:
+          'Você é analista de produto sênior da D1FITNESS, empresa brasileira de equipamentos fitness.\n\n' +
+          'Dados dos registros de campo (vendedores captando pedidos de clientes):\n' +
+          '- Total de formulários: ' + globalData.total + '\n' +
+          '- Vendedores ativos: ' + vends.join(', ') + '\n' +
+          '- Top produtos citados pelos clientes:\n' +
+          top.map(([p,q])=>'  • ' + p + ': ' + q + ' citações').join('\n') + '\n\n' +
+          'Análise executiva (máximo 300 palavras, português direto):\n' +
+          '1. **Top 3 produtos prioritários** — o que o cliente mais pede e por quê importa\n' +
+          '2. **Uma oportunidade de compra/produto** — padrão claro nos dados\n' +
+          '3. **Ação recomendada esta semana** — algo concreto para compras/produto\n' +
+          '4. **Alerta** — algo que o fundador deve saber agora'
+        }]
+      })
+    });
+    const result = await res.json();
+    const text = result.content[0].text;
+    box.innerHTML = text
+      .replace(/\*\*(.+?)\*\*/g,'<strong style="color:var(--tx);">$1</strong>')
+      .replace(/\n/g,'<br>');
+  } catch(e) {
+    box.innerHTML = '<span style="color:#f87171;">Erro: ' + e.message + '</span>';
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML = 'Analisar com IA';
+  }
+}
+
+async function sendWeekly() {
+  if (!appsScriptUrl) return;
+  const btn = document.getElementById('weeklyBtn');
+  const msg = document.getElementById('weeklyMsg');
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner"></span> Enviando...';
+  msg.textContent = '';
+  try {
+    const sep = appsScriptUrl.includes('?') ? '&' : '?';
+    const res = await fetch(appsScriptUrl + '?action=resumo&t=' + Date.now());
+    const json = await res.json();
+    if (json.erro) throw new Error(json.erro);
+    msg.innerHTML = '<div class="success-msg">✓ Email enviado para renan@d1fitness.com.br</div>';
+  } catch(e) {
+    msg.innerHTML = '<div class="err-msg">Erro: ' + e.message + '</div>';
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML = 'Enviar resumo agora';
+  }
+}
+</script>
+</body>
+</html>
