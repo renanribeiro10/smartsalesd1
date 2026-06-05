@@ -228,6 +228,17 @@ function render(){
   const td=new Date().toLocaleDateString('pt-BR',{weekday:'long',day:'numeric',month:'long'});
   const tdC=td.charAt(0).toUpperCase()+td.slice(1);
 
+  const horaBR=new Date(new Date().toLocaleString('en-US',{timeZone:'America/Sao_Paulo'})).getHours();
+  if(horaBR>=18 && st.phase!=='done' && st.phase!=='submitting'){
+    wrap.innerHTML=logo('Registro encerrado')+
+    '<div style="text-align:center;padding:32px 16px;">'+
+    '<div style="font-size:48px;margin-bottom:16px;">🔒</div>'+
+    '<h2 style="font-size:22px;font-weight:800;color:var(--tx);margin-bottom:12px;">Formulário encerrado</h2>'+
+    '<p style="color:var(--mt2);font-size:15px;line-height:1.6;max-width:280px;margin:0 auto;">O registro diário encerra às <strong style="color:var(--or);">18h00</strong>.<br>Volte amanhã a partir das 17h15.</p>'+
+    '</div>';
+    return;
+  }
+
   if(st.phase==='splash'){wrap.innerHTML=`${logo('Sistema de Inteligência de Produto')}
     <div class="hero-tag"><div class="dot"></div>Uso interno · Vendas D1FITNESS</div>
     <h1 class="hero-h">A voz do cliente<br>vira <span class="oa">decisão.</span></h1>
@@ -346,6 +357,8 @@ function nextStep(){if(voiceActive&&recog)recog.stop();const s=st.formStep;if(s=
 function saveEntry(){st.entries.push({...st.cur});st.cur={type:null,product:'',description:'',frequency:1,imgData:null};go('add-more');}
 
 async function submitData(){
+  const hBR=new Date(new Date().toLocaleString('en-US',{timeZone:'America/Sao_Paulo'})).getHours();
+  if(hBR>=18){go('error');return;}
   go('submitting');
   const v=st.vendor||st.nameInput.trim();
   const today=new Date().toLocaleDateString('pt-BR',{day:'2-digit',month:'2-digit',year:'numeric'});
