@@ -12,7 +12,7 @@ const VENDEDORES = [
   { nome: 'Marcos', email: 'marcos@d1fitness.com.br' },
   { nome: 'Carlos', email: 'carlos@d1fitness.com.br' },
   { nome: 'Ruan',   email: 'ruan@d1fitness.com.br'   },
-  { nome: 'Glauco', email: 'glauco@d1fitness.com.br' },
+  { nome: 'Glauco Alexandre', email: 'glauco@d1fitness.com.br' },
   { nome: 'Renan',  email: 'renan@d1fitness.com.br'  },
 ];
 
