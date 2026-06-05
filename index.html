@@ -280,7 +280,7 @@ function render(){
     <div class="meta">${tdC}</div>
     <h1 class="big-h">Olá,<br><span class="oa">${fn}.</span></h1>
     <p class="sub">Registre o que você ouviu dos clientes hoje. Escreva ou use o <strong style="color:var(--tx)">comando de voz</strong> 🎙️ para ir mais rápido.</p>
-    <button class="btn" onclick="startForm()">Começar registro →</button>
+    <button class="btn" onclick="go('choice')">Começar registro →</button>
     ${st.entries.length?`<button class="btn-gh" onclick="go('review')">Ver ${st.entries.length} ${st.entries.length===1?'registro':'registros'} →</button>`:''}`;
   }
 
