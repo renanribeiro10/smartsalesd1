@@ -317,7 +317,7 @@ function emailHtmlDiario(nome, link, ranking) {
       '<div style=\"font-size:15px;font-weight:bold;color:#ffffff;margin-bottom:2px;\">Ranking de Intelig&ecirc;ncia de Produto</div>' +
       '<div style=\"font-size:12px;color:#FF5C00;\">Quem mais registra, mais influencia o portf&oacute;lio.</div>' +
       '</div>' +
-      '<table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" style=\"border-collapse:collapse;border:1px solid #eee;border-top:none;\">\' + linhas + \'</table>' +
+      '<table width="100%" cellpadding="0" cellspacing="0" style="border-collapse:collapse;border:1px solid #eee;border-top:none;">' + linhas + '</table>' +
       '<div style=\"font-size:12px;color:#aaa;text-align:center;margin-top:10px;line-height:1.6;\">' +
       'Cada registro vale pontos &mdash; consist&ecirc;ncia gera <strong style=\"color:#FF5C00;\">streak</strong> e b&ocirc;nus. &#x1F525;' +
       '</div>';
