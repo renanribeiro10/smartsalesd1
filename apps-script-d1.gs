@@ -629,5 +629,35 @@ function emailHtmlResumoSemanal(top, vendedores, totalFormularios, totalRegistro
   '</table></td></tr></table></body></html>';
 }
 
+
+// ─── RESET COMPLETO ─────────────────────────────────────
+function zerarTudo() {
+  const ss = SpreadsheetApp.openById(SHEET_ID);
+
+  // Zera aba Registros (mantém cabeçalho)
+  const reg = ss.getSheetByName('D1FITNESS · Inteligência de Produto');
+  if (reg && reg.getLastRow() > 1) {
+    reg.deleteRows(2, reg.getLastRow() - 1);
+  }
+
+  // Zera aba Gamificacao (reseta pontos, mantém vendedores)
+  const gam = ss.getSheetByName('Gamificacao');
+  if (gam && gam.getLastRow() > 1) {
+    const nRows = gam.getLastRow() - 1;
+    // Zera colunas: Pontos(3), Envios(4), Streak(5), Melhor Streak(6), Ultimo Envio(7)
+    gam.getRange(2, 3, nRows, 5).clearContent();
+    // Reinsere zeros e traço
+    for (var i = 2; i <= gam.getLastRow(); i++) {
+      gam.getRange(i, 3).setValue(0); // Pontos
+      gam.getRange(i, 4).setValue(0); // Envios
+      gam.getRange(i, 5).setValue(0); // Streak
+      gam.getRange(i, 6).setValue(0); // Melhor Streak
+      gam.getRange(i, 7).setValue('-'); // Ultimo Envio
+    }
+  }
+
+  Logger.log('✅ Tudo zerado! Pronto para segunda-feira.');
+}
+
 function ok()    { return ContentService.createTextOutput(JSON.stringify({success:true})).setMimeType(ContentService.MimeType.JSON); }
 function erro(e) { return ContentService.createTextOutput(JSON.stringify({success:false,error:e})).setMimeType(ContentService.MimeType.JSON); }
