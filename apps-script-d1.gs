@@ -61,7 +61,8 @@ function atualizarGamificacao(data) {
   const nRegistros  = parseInt(data.total_registros) || 0;
   const hora        = new Date().getHours();
   const pontosBase  = hora < 18 ? 10 : 5;
-  const totalPontos = pontosBase + (nRegistros * 2);
+  const isSemDemanda = (data.tipo === 'sem_demanda') || (String(data.registros||'').indexOf('Sem demandas hoje') !== -1);
+  const totalPontos = isSemDemanda ? 1 : pontosBase + (nRegistros * 2);
   const dados       = gSheet.getDataRange().getValues();
   let linhaIdx      = -1;
   for (let i = 1; i < dados.length; i++) {
