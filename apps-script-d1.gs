@@ -540,16 +540,19 @@ function doGet(e) {
     });
     // Also get ranking from Gamificacao sheet
     const ranking = [];
+    var gamDebug = '';
     try {
-      const gs = ss.getSheetByName('Gamificacao');
+      const allSheets = ss.getSheets().map(function(s){ return s.getName(); });
+      gamDebug = allSheets.join('|');
+      const gs = ss.getSheetByName('Gamificacao') || ss.getSheetByName('Gamificação');
       if (gs && gs.getLastRow() > 1) {
         const gr = gs.getDataRange().getValues().slice(1);
         gr.forEach(function(r) {
           if (r[1]) ranking.push({pos:r[0], nome:r[1], pontos:r[2]||0, envios:r[3]||0, streak:r[4]||0, melhorStreak:r[5]||0, ultimoEnvio:r[6]||'-'});
         });
       }
-    } catch(e) {}
-    return jsonResp({dados: rows, total: rows.length, ranking: ranking});
+    } catch(e) { gamDebug = 'erro:' + e.message; }
+    return jsonResp({dados: rows, total: rows.length, ranking: ranking, _sheets: gamDebug});
   } catch(err) { return jsonResp({erro: err.message, sheetId:SHEET_ID}); }
 }
 
