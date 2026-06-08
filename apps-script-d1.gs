@@ -518,7 +518,18 @@ function doGet(e) {
     const rows = raw.slice(1).map(r => {
       const o = {}; hdrs.forEach((h,i) => { o[h] = r[i]; }); return o;
     });
-    return jsonResp({dados: rows, total: rows.length});
+    // Also get ranking from Gamificacao sheet
+    const ranking = [];
+    try {
+      const gs = ss.getSheetByName('Gamificacao');
+      if (gs && gs.getLastRow() > 1) {
+        const gr = gs.getDataRange().getValues().slice(1);
+        gr.forEach(function(r) {
+          if (r[1]) ranking.push({pos:r[0], nome:r[1], pontos:r[2]||0, envios:r[3]||0, streak:r[4]||0, melhorStreak:r[5]||0, ultimoEnvio:r[6]||'-'});
+        });
+      }
+    } catch(e) {}
+    return jsonResp({dados: rows, total: rows.length, ranking: ranking});
   } catch(err) { return jsonResp({erro: err.message, sheetId:SHEET_ID}); }
 }
 
