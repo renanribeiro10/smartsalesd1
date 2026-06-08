@@ -165,6 +165,7 @@ body{font-family:'Figtree',sans-serif;background:var(--bg);color:var(--tx);min-h
       <button class="tab-btn" onclick="setTab('vendedores',this)">Vendedores</button>
       <button class="tab-btn" onclick="setTab('insights',this)">IA D1</button>
       <button class="tab-btn" onclick="setTab('semana',this)">Resumo semanal</button>
+    <button class="tab-btn" onclick="setTab('ranking',this)">🏆 Ranking</button>
     </div>
 
     <!-- PRODUTOS -->
@@ -197,6 +198,17 @@ body{font-family:'Figtree',sans-serif;background:var(--bg);color:var(--tx);min-h
     </div>
 
     <!-- RESUMO SEMANAL -->
+    <div id="tab-ranking" class="hidden">
+      <div class="panel">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;">
+          <div>
+            <div class="panel-title" style="margin-bottom:0;">Ranking de Inteligência de Produto</div>
+            <div style="font-size:12px;color:var(--tx2);margin-top:3px;">Quem mais registra, mais influencia o portfólio.</div>
+          </div>
+        </div>
+        <div id="rankingList"></div>
+      </div>
+    </div>
     <div id="tab-semana" class="hidden">
       <div class="panel">
         <div class="panel-title">Email de resumo semanal</div>
@@ -230,7 +242,7 @@ let appsScriptUrl = '';
 function setTab(t, el) {
   document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
   el.classList.add('active');
-  ['produtos','vendedores','insights','semana'].forEach(id => {
+  ['produtos','vendedores','insights','semana','ranking'].forEach(id => {
     document.getElementById('tab-' + id).classList.toggle('hidden', id !== t);
   });
 }
@@ -336,6 +348,29 @@ function render(json) {
       '<div class="stat-box"><div class="stat-val or">' + s.semana + '</div><div class="stat-lbl">Semana</div></div>' +
       '</div></div>'
     ).join('');
+  }
+
+  // RANKING
+  const rankingData = (json.ranking || []).filter(r => r.nome !== 'Renan');
+  const medals = ['🥇','🥈','🥉'];
+  const rl = document.getElementById('rankingList');
+  if (!rankingData.length) {
+    rl.innerHTML = '<div style="color:var(--tx3);font-size:13px;text-align:center;padding:32px;">Nenhum dado de ranking ainda</div>';
+  } else {
+    rl.innerHTML = rankingData.map((r, i) => {
+      const medal = i < 3 ? medals[i] : (i+1) + '.';
+      const streakBadge = r.streak > 1 ? '<span style="font-size:11px;background:rgba(255,92,0,0.1);color:var(--or);border-radius:4px;padding:1px 6px;margin-left:6px;">🔥 ' + r.streak + ' dias</span>' : '';
+      const pts = r.pontos > 0 ? '<span style="font-size:14px;font-weight:600;color:var(--or);">' + r.pontos + ' pts</span>' : '<span style="color:var(--tx3);">—</span>';
+      return '<div class="vend-row">' +
+        '<div class="vend-left" style="gap:12px;">' +
+        '<div style="width:28px;text-align:center;font-size:16px;">' + medal + '</div>' +
+        '<div>' +
+        '<div style="font-size:13px;color:var(--tx);">' + r.nome + streakBadge + '</div>' +
+        '<div style="font-size:11px;color:var(--tx3);margin-top:2px;">' + r.envios + ' envio' + (r.envios !== 1 ? 's' : '') + ' · último: ' + (r.ultimoEnvio || '—') + '</div>' +
+        '</div></div>' +
+        '<div>' + pts + '</div>' +
+        '</div>';
+    }).join('');
   }
 
   document.getElementById('emptyState').classList.add('hidden');
